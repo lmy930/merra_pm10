@@ -1,0 +1,40 @@
+# 环境、缓存及编辑器配置
+.venv*/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.idea/
+.vscode/
+
+# 登录信息
+.env
+.env.*
+!.env.example
+.netrc
+_netrc
+credentials*.json
+*-credentials.json
+service-account*.json
+
+# 下载清单、任务记录及研究数据
+/merra_links/
+/merra_links_neighbors/
+/merra_download/
+/merra_data/
+/merra_data_neighbors/
+
+# 大型数据及临时文件
+*.nc
+*.nc4
+*.grib*
+*.grb
+*.hdf
+*.h5
+*.tif
+*.tiff
+*.parquet
+*.part
+*.tmp
+*.log
