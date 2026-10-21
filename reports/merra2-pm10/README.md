@@ -1,28 +1,28 @@
 # MERRA-2阶段性研究报告
 
-## 当前修订稿
+## 当前方法修订稿 V2
 
-**[数据介绍与处理方法整合稿：在线阅读](drafts/data-and-methods/README.md)**
+**[在线阅读：数据构建与时空匹配方法](drafts/data-and-methods/README.md)**
 
-- [下载可编辑Word](drafts/data-and-methods/MERRA2_Data_and_Methods_v1.docx?raw=true)
-- [查看PDF排版](drafts/data-and-methods/MERRA2_Data_and_Methods_v1.pdf)
+- [下载可编辑Word](drafts/data-and-methods/MERRA2_Methods_and_Matching_v2.docx?raw=true)
+- [查看PDF排版](drafts/data-and-methods/MERRA2_Methods_and_Matching_v2.pdf)
 
-本稿将“数据是什么”和“我们如何获取、计算与保存”分为两章，补充NASA临时结果有效期说明及巴基斯坦2026年任务日志示例，明确逐时次计算PM10后沿time维写入年度文件的实际流程。共9页，含流程图、公式与目录参数附录。后续观测评价章节尚未展开。
+本稿共11页，将原先集中在一章的获取、计算、保存内容重写为四章：
 
-此前单独审阅的[数据介绍节](sections/01-data-introduction/README.md)保留供对照。
+1. **数据来源与研究范围**：产品选择、时空特征、区域年段及输入变量。
+2. **MERRA-2原始数据获取与质量控制**：区域请求、日链接与到期管理、实体下载和输入验收。
+3. **近地面PM₁₀估算与年度数据构建**：组分公式、逐时次计算、年度时间拼接、结果验收及保存理由。
+4. **城市与监测站点的时空匹配方法**：点位核查、球面最近邻、时间统一、观测配对原则及多年序列。
 
-## 历史完整稿 V2（保留供对照）
+具体目录和存储参数移至附录。正文明确年度拼接保留3小时时次，并将已经实现的模式点位提取与尚待确定的地面观测配对区分。公式书目、坐标来源及观测时间定义等未确认信息保留核实说明。
 
-此前完整稿的后续章节尚未按当前结构统一修订：
+## 此前审阅版本
 
-- [在线文字版](report.md)
-- [Word文件](MERRA2_PM10_Report_v2.docx?raw=true)
-- [PDF文件](MERRA2_PM10_Report_v2.pdf)
+- [数据介绍独立分节](sections/01-data-introduction/README.md)
+- [数据介绍与处理方法整合稿 V1：Word](drafts/data-and-methods/MERRA2_Data_and_Methods_v1.docx?raw=true)
+- [整合稿 V1：PDF](drafts/data-and-methods/MERRA2_Data_and_Methods_v1.pdf)
+- [历史完整稿 V2：文字](report.md)／[Word](MERRA2_PM10_Report_v2.docx?raw=true)／[PDF](MERRA2_PM10_Report_v2.pdf)
 
 ## 后续修改
 
-在原聊天中提出修改要求，更新报告后继续上传本分支。Word用于编辑，PDF用于检查排版，文字版用于浏览器审阅。
-
-## 内容边界
-
-公式完整出处、坐标来源和实际完成年份等未确认信息仍标注待核实，不将流程完成表述为观测精度验证。本目录不含账号密码、原始气溶胶数据或NASA临时下载链接。
+在原聊天中提出修改要求，继续更新本分支。Word用于编辑，PDF用于检查排版，文字版用于浏览器审阅。本目录不含账号密码、原始气溶胶数据或NASA临时下载链接。
