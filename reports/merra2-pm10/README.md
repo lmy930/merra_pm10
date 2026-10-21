@@ -1,23 +1,29 @@
 # MERRA-2阶段性研究报告
 
-## 当前方法修订稿 V4
+## 当前方法修订稿 V5
 
 **[在线阅读：数据构建与时空匹配方法](drafts/data-and-methods/README.md)**
 
-- [下载可编辑Word](drafts/data-and-methods/MERRA2_Methods_and_Matching_v4.docx?raw=true)
-- [查看PDF排版](drafts/data-and-methods/MERRA2_Methods_and_Matching_v4.pdf)
+- [下载可编辑Word](drafts/data-and-methods/MERRA2_Methods_and_Matching_v5.docx?raw=true)
+- [查看PDF排版](drafts/data-and-methods/MERRA2_Methods_and_Matching_v5.pdf)
 
-本稿共8页。保留第一章主体，小幅补全机构名称、明确PM₁₀由原始组分计算得到，并减少重复解释。第二至第四章较V3压缩约四成，重点说明方法、必要理由和结果用途：
+本稿共8页，保留精简后的四章结构。按正式汇报要求复核方法表述，补充最近邻方法选用理由，并将公式依据待补说明与已具备书目信息的参考文献区分。
 
-1. **数据来源与研究范围**：资料概况、基本信息、研究区域、时间及输入变量。
-2. **原始数据获取与质量控制**：年度区域子集、链接与实体下载、有效期及输入检查。
-3. **近地面PM₁₀计算与结果保存**：组分公式及单位、逐时次计算、年度合并、保存依据和质量检查。
-4. **城市点位PM₁₀的时空匹配**：点位核查、最近邻、时间对应、序列输出及检查。
+新版流程图使用白底黑线和清晰箭头，三阶段分别标示处理步骤与输出：原始组分日文件→年度PM₁₀网格→城市PM₁₀序列。Word中的标题线、表头也统一为黑白灰，适合打印。
 
-正文不展开任务编号修复、标签处理等程序细节；具体存储参数、追溯字段、有效期示例与球面距离公式集中于附录。公式文献、点位坐标来源和观测配对规则的核实说明保留。
+### 汇报用流程图
+
+- [高清PNG](drafts/data-and-methods/assets/methods_matching_flow_bw.png?raw=true)
+- [SVG矢量图](drafts/data-and-methods/assets/methods_matching_flow_bw.svg?raw=true)
+- [单页矢量PDF](drafts/data-and-methods/assets/methods_matching_flow_bw.pdf)
+
+### 正式定稿前需补齐
+
+PM₁₀系数的完整原始文献、城市点位坐标来源和定义、地面观测的时间配对规则。这些事项已明确说明，现阶段不表述为已经完成观测精度验证。
 
 ## 此前审阅版本
 
+- [方法修订稿 V4：Word](drafts/data-and-methods/MERRA2_Methods_and_Matching_v4.docx?raw=true)／[PDF](drafts/data-and-methods/MERRA2_Methods_and_Matching_v4.pdf)
 - [方法修订稿 V3：Word](drafts/data-and-methods/MERRA2_Methods_and_Matching_v3.docx?raw=true)／[PDF](drafts/data-and-methods/MERRA2_Methods_and_Matching_v3.pdf)
 - [方法修订稿 V2：Word](drafts/data-and-methods/MERRA2_Methods_and_Matching_v2.docx?raw=true)／[PDF](drafts/data-and-methods/MERRA2_Methods_and_Matching_v2.pdf)
 - [数据介绍独立分节](sections/01-data-introduction/README.md)
