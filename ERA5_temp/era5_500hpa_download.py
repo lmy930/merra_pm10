@@ -1,8 +1,122 @@
-"""ERA5 500 hPa 风场：旧 A 方法；三种模式；按自然月保存。
-"""
+r'''
+ERA5 500 hPa 下载：PowerShell 运行说明
 
+当前目录：D:\PythonProject\PythonProject\ERA5_temp
+脚本：era5_500hpa_download.py
+Python 环境：.venv_gee
+
+三种模式：
+links     只获取并保存链接，不下载数据文件。
+auto      获取链接后立即下载、整理和保存。
+download  使用已有链接或已有 raw 原件，不提交 CDS 请求。
+
+时间均为 UTC。
+--date 指定一天，获取当天 00:00—23:00 的 24 个时次。
+--month 指定一个完整自然月。
+--start 与 --end 指定日期范围，包含结束当天，自动按月拆分。
+
+以下是不同场景的命令，按需选择，不需要全部依次执行。
+获取链接和后续下载，应使用相同的日期范围和 --out。
+
+
+一、links：只获取链接，不下载数据
+
+1. 一天测试
+
+& ".\.venv_gee\Scripts\python.exe" .\era5_500hpa_download.py --date 2026-05-31 --mode links --out ".\test_day"
+
+2. 正式获取一个完整月的链接
+
+& ".\.venv_gee\Scripts\python.exe" .\era5_500hpa_download.py --month 2026-05 --mode links --out ".\era5_202605"
+
+3. 获取多个月份的链接，例如 2026 年 3—5 月
+
+& ".\.venv_gee\Scripts\python.exe" .\era5_500hpa_download.py --start 2026-03-01 --end 2026-05-31 --mode links --out ".\era5_202603_202605"
+
+链接保存在对应输出目录的 links 文件夹。
+每个月一份 TXT 和 JSON。
+获取链接仍需等待 CDS 排队并准备结果文件。
+
+
+二、auto：获取链接后立即用 Python 下载、整理和保存
+
+1. 一天测试
+
+& ".\.venv_gee\Scripts\python.exe" .\era5_500hpa_download.py --date 2026-05-31 --mode auto --out ".\test_day"
+
+2. 正式下载一个完整月
+
+& ".\.venv_gee\Scripts\python.exe" .\era5_500hpa_download.py --month 2026-05 --mode auto --out ".\era5_202605"
+
+3. 下载多个月份，例如 2026 年 3—5 月
+
+& ".\.venv_gee\Scripts\python.exe" .\era5_500hpa_download.py --start 2026-03-01 --end 2026-05-31 --mode auto --out ".\era5_202603_202605"
+
+多个月份按“获取本月链接 → 下载 → 整理保存 → 下个月”的顺序处理。
+已有链接记录时会复用链接；已有合格最终文件时，校验后跳过。
+
+
+三、download：使用已保存的链接或已有原件，不提交 CDS 请求
+
+1. 下载之前获取链接的一天测试数据
+
+& ".\.venv_gee\Scripts\python.exe" .\era5_500hpa_download.py --date 2026-05-31 --mode download --out ".\test_day"
+
+2. 下载之前获取链接的一个完整月
+
+& ".\.venv_gee\Scripts\python.exe" .\era5_500hpa_download.py --month 2026-05 --mode download --out ".\era5_202605"
+
+3. 下载之前获取链接的多个月份
+
+& ".\.venv_gee\Scripts\python.exe" .\era5_500hpa_download.py --start 2026-03-01 --end 2026-05-31 --mode download --out ".\era5_202603_202605"
+
+已有同名 raw 原件时，直接检查、整理并输出到 data。
+因此，IDM 下载完成并按规范名称放入 raw 后，也运行对应的 download 命令。
+已有合格的 data 文件时，校验后跳过。
+
+
+输出与命名
+
+--out：本次任务的输出根目录。
+links：每月的链接 TXT 和参数 JSON。
+raw：下载原件。
+data：整理后的最终 NetCDF。
+
+完整月命名示例：
+links\ERA5_500hPa_uv_202605_hourly.txt
+raw\ERA5_500hPa_uv_202605_hourly.nc
+data\ERA5_500hPa_uv_202605_hourly.nc
+
+一天测试的最终文件示例：
+test_day\data\ERA5_500hPa_uv_20260531_test_hourly.nc
+
+
+多人分工与使用注意
+
+1. 多人分工时，将多月份命令中的 --start、--end 和 --out
+   改成各自负责的日期范围与输出目录。
+   范围按完整月份划分，分工之间不要重叠。
+
+2. 如果交给另一人下载，保留并交接 links 文件夹中的 JSON 和 TXT。
+   Python 后续下载需要 JSON 记录，不能只保留 TXT。
+   接收者将 --out 指向自己电脑上的对应输出目录。
+
+3. TXT 可以改名，但其中的 URL 必须保持原样。
+   IDM 保存目录设为对应的 raw，保存名使用规范的 NC 文件名。
+
+4. 链接有时效，建议分批获取、及时下载。
+   确认链接失效后，才对相应月份使用 --mode links --refresh。
+   --refresh 不用于加快排队。
+
+5. #默认成功整理后删除 raw 原件。
+   #如需保留原件，在下载或首次整理命令末尾增加 --keep-raw。
+
+6. Accepted 表示已受理、正在等待处理。
+   保留当前任务等待，不要因暂时没有进度条而重复提交。
+'''
 import argparse
 import calendar
+import csv
 import json
 import shutil
 import zipfile
@@ -175,6 +289,18 @@ def read_data(path, times):
     return ds
 
 
+def save_download_list(root):
+    """汇总 URL 与保存名，供 IDM 队列命令使用；兼容原有 JSON 记录。"""
+    with (root / "download_links.csv").open("w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=["filename", "url"])
+        writer.writeheader()
+        for path in sorted((root / "links").glob("*.json")):
+            record = json.loads(path.read_text(encoding="utf-8"))
+            if record.get("url"):
+                name = record.get("filename", f"ERA5_500hPa_uv_{path.stem}_hourly.nc")
+                writer.writerow({"filename": name, "url": record["url"]})
+
+
 def main():
     a, start, end = arguments()
     tasks = list(month_tasks(start, end))
@@ -197,7 +323,7 @@ def main():
 
     for token, filename, request, times in tasks:
         record_path = folders["links"] / f"{token}.json"
-        txt_path = record_path.with_suffix(".txt")
+        txt_path = folders["links"] / Path(filename).with_suffix(".txt")
         raw = folders["raw"] / filename
         output = folders["data"] / filename
 
@@ -253,12 +379,18 @@ def main():
             }
 
         if record.get("url"):
+            record.update(
+                filename=filename,
+                raw_relative_path=f"raw/{filename}",
+                output_relative_path=f"data/{filename}",
+            )
             # 链接临时有效；保存生成时间，不编造固定到期日期。
             record_path.write_text(
                 json.dumps(record, ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
             txt_path.write_text(record["url"] + "\n", encoding="utf-8")
+            save_download_list(a.out.resolve())
             if previous_url != record["url"]:
                 raw.with_name(raw.name + ".part").unlink(missing_ok=True)
 
@@ -303,11 +435,15 @@ def main():
         ds.close()
         temp.replace(output)
 
-        if not a.keep_raw:
-            raw.unlink()
+#        if not a.keep_raw:
+#            raw.unlink()
 
         print(f"完成：{output}", flush=True)
 
 
 if __name__ == "__main__":
     main()
+
+
+
+
